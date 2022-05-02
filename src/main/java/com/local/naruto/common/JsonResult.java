@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JsonResult<T> {
+
     private int status;
     private T data;
     private String message;

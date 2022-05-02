@@ -4,10 +4,10 @@ import com.local.naruto.common.Constants;
 import org.apache.log4j.Logger;
 
 public class ServiceException extends RuntimeException {
-    private int code;
-    private String message;
 
     private static final Logger LOG = Logger.getLogger(ServiceException.class);
+    private int code;
+    private String message;
 
     public ServiceException() {
     }

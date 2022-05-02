@@ -1,13 +1,12 @@
 package com.local.naruto.exception;
 
+import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zalando.problem.AbstractThrowableProblem;
 import org.zalando.problem.Status;
-
-import java.net.URI;
 
 @Getter
 @Setter

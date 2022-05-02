@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class DateUtils {
+
     private static final String FULL_DATE_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String YMD_DATE_FORMAT = "yyyy-MM-dd";
 

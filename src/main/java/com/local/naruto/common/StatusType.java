@@ -1,8 +1,8 @@
 package com.local.naruto.common;
 
 public enum StatusType {
-    IN_USE(1, "in use"),
-    NOT_USE(2, "not use"),
+    IN_USE(1, "enable"),
+    NOT_USE(2, "disable"),
     DELETE(3, "delete"),
     DRAFT(4, "draft");
 

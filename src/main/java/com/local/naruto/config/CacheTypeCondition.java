@@ -8,7 +8,7 @@ public class CacheTypeCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        String cacheType=context.getEnvironment().getProperty("spring.cache.type");
-        return cacheType!=null&&cacheType.equals("redis");
+        String cacheType = context.getEnvironment().getProperty("spring.cache.type");
+        return cacheType != null && cacheType.equals("redis");
     }
 }

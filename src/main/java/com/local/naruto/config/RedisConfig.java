@@ -1,12 +1,11 @@
 package com.local.naruto.config;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -15,15 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.cache.CacheKeyPrefix;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import java.lang.reflect.Method;
-import java.time.Duration;
 
 @Configuration
 @Conditional(CacheTypeCondition.class)
@@ -32,19 +28,17 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Value("${spring.application.name}")
     private String prefix;
 
+    @Override
     @Bean
     public KeyGenerator keyGenerator() {
-        return new KeyGenerator() {
-            @Override
-            public Object generate(Object target, Method method, Object... params) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(target.getClass().getName());
-                sb.append(method.getName());
-                for (Object obj : params) {
-                    sb.append(obj.toString());
-                }
-                return sb.toString();
+        return (target, method, params) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(target.getClass().getName());
+            sb.append(method.getName());
+            for (Object obj : params) {
+                sb.append(obj.toString());
             }
+            return sb.toString();
         };
     }
 
@@ -53,13 +47,9 @@ public class RedisConfig extends CachingConfigurerSupport {
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration redis = RedisCacheConfiguration.defaultCacheConfig();
         redis.entryTtl(Duration.ofSeconds(86400));
-        redis.computePrefixWith(new CacheKeyPrefix() {
-            private final String delimiter = ":";
-
-            @Override
-            public String compute(String cacheName) {
-                return prefix.concat(delimiter).concat(cacheName);
-            }
+        redis.computePrefixWith(cacheName -> {
+            String delimiter = ":";
+            return prefix.concat(delimiter).concat(cacheName);
         });
         return RedisCacheManager.builder(connectionFactory).cacheDefaults(redis).build();
     }
